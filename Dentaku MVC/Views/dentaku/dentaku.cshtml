@@ -1,0 +1,23 @@
+﻿@model Dentaku_MVC.Models.dentaku
+
+@{
+    ViewBag.Title = "電卓もどき";
+}
+<h2>@ViewBag.Title</h2>
+
+@using (@Html.BeginForm())
+{
+    <div class="form-item">
+        @Html.LabelFor(model => model.siki)
+        @Html.TextBoxFor(model => model.siki)
+    </div>
+    <div class="form-item">
+        @Html.LabelFor(model => model.kotae)
+        @Html.TextBoxFor(model => model.kotae)
+    </div>
+    <div class="button-panel">
+        <input type="submit" 　class="button" value="ログイン" />
+    </div>
+    <br />
+    <label style="color:#ff0000">@Html.ValidationSummary()</label>
+}
