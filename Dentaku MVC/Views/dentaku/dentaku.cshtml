@@ -1,4 +1,4 @@
-﻿@model Dentaku_MVC.Models.dentaku
+﻿@model Dentaku_MVC.Models.dentakuModel
 
 @{
     ViewBag.Title = "電卓もどき";
@@ -12,8 +12,8 @@
         @Html.TextBoxFor(model => model.siki)
     </div>
     <div class="form-item">
-        @Html.LabelFor(model => model.kotae)
-        @Html.TextBoxFor(model => model.kotae)
+        @Html.LabelFor(model => model.result)
+        @Html.TextBoxFor(model => model.result)
     </div>
     <div class="button-panel">
         <input type="submit" 　class="button" value="ログイン" />

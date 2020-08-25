@@ -2,12 +2,12 @@
 
 namespace Dentaku_MVC.Models
 {
-    public class dentaku
+    public class dentakuModel
     {
         [Display(Name = "計算式")]
         public string siki { get; set; }
 
         [Display(Name = "答え")]
-        public string kotae { get; set; }
+        public string result { get; set; }
     }
 }
