@@ -11,11 +11,18 @@ namespace Dentaku_MVC.Controllers
     public class dentakuController : Controller
     {
 
-        public ActionResult Index()
+        [HttpGet]
+        public ActionResult dentaku()
         {
-       
-                return View();
-         
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult dentaku(dentakuModel model)
+        {
+            model.result = CalcProc(model.siki).ToString();
+          
+            return View();
         }
 
         /// <summary>
@@ -32,8 +39,15 @@ namespace Dentaku_MVC.Controllers
                 string right = String.Empty;
                 string enzansi = String.Empty;
                 string kari = String.Empty;
-                int res = 0;
+                int leftres = 0;
+                int rightres = 0;
                 int result = 0;
+
+                //空の時は処理を抜ける
+                if (String.IsNullOrEmpty(siki))
+                {
+                    return 0;
+                }
 
                 for (int i = 0; i < siki.Length; i++)
                 {
@@ -45,35 +59,35 @@ namespace Dentaku_MVC.Controllers
                         case "+":
                             left = siki.Substring(0, i);   //左側の式を取得
                             enzansi = kari;         //kari変数の中に演算子が入っているはず
-                            right = siki.Substring(i,siki.Length - i);   //右側の式を取得
+                            right = siki.Substring(i + 1);   //右側の式を取得
                             break;
 
                         case "-":
                             left = siki.Substring(0, i);   //左側の式を取得
                             enzansi = kari;         //kari変数の中に演算子が入っているはず
-                            right = siki.Substring(i, siki.Length - i);   //右側の式を取得
+                            right = siki.Substring(i + 1);   //右側の式を取得
                             break;
 
                         case "%":
                             left = siki.Substring(0, i);   //左側の式を取得
                             enzansi = kari;         //kari変数の中に演算子が入っているはず
-                            right = siki.Substring(i, siki.Length - i);   //右側の式を取得
+                            right = siki.Substring(i + 1);   //右側の式を取得
                             break;
 
                         case "/":
                             left = siki.Substring(0, i);   //左側の式を取得
                             enzansi = kari;         //kari変数の中に演算子が入っているはず
-                            right = siki.Substring(i, siki.Length - i);   //右側の式を取得
+                            right = siki.Substring(i + 1);   //右側の式を取得
                             break;
 
                         case "*":
                             left = siki.Substring(0, i);   //左側の式を取得
                             enzansi = kari;         //kari変数の中に演算子が入っているはず
-                            right = siki.Substring(i, siki.Length - i);   //右側の式を取得
+                            right = siki.Substring(i + 1);   //右側の式を取得
                             break;
 
                         default:
-                            continue;
+                            break;
                     }
 
                 }
@@ -87,7 +101,7 @@ namespace Dentaku_MVC.Controllers
                     return 0;
                 }
                 //数字に変換可能か
-                if (!int.TryParse(left, out res))
+                if (!int.TryParse(left, out leftres))
                 {
                     //メッセージボックス（アラート）使いたいけど、JavaScriptの力が必要。
                     //とりあえず後回し
@@ -110,13 +124,42 @@ namespace Dentaku_MVC.Controllers
                     return 0;
                 }
                 //数字に変換可能か
-                if (!int.TryParse(right, out res))
+                if (!int.TryParse(right, out rightres))
                 {
                     //メッセージボックス（アラート）使いたいけど、JavaScriptの力が必要。
                     //とりあえず後回し
                     return 0;
                 }
                 #endregion
+
+                //演算子を見て計算する
+                switch (enzansi)
+                {
+
+                    case "+":
+                        result = leftres + rightres;
+                        break;
+
+                    case "-":
+                        result = leftres - rightres;
+                        break;
+
+                    case "%":
+                        result = leftres % rightres;
+                        break;
+
+                    case "/":
+                        result = leftres / rightres;
+                        break;
+
+                    case "*":
+                        result = leftres * rightres;
+                        break;
+
+                    default:
+                        result = 0;
+                        break;
+                }
 
                 return result;
             }

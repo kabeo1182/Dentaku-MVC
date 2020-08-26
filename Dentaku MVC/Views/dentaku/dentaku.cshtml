@@ -8,15 +8,15 @@
 @using (@Html.BeginForm())
 {
     <div class="form-item">
-        @Html.LabelFor(model => model.siki)
+        @Html.DisplayNameFor(model => model.siki)
         @Html.TextBoxFor(model => model.siki)
     </div>
     <div class="form-item">
-        @Html.LabelFor(model => model.result)
-        @Html.TextBoxFor(model => model.result)
+        @Html.DisplayNameFor(model => model.result)
+        @Html.DisplayFor(model => model.result)
     </div>
     <div class="button-panel">
-        <input type="submit" 　class="button" value="ログイン" />
+        <input type="submit" class="button" value="計算" />
     </div>
     <br />
     <label style="color:#ff0000">@Html.ValidationSummary()</label>
