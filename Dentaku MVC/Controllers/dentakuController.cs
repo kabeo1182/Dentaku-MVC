@@ -11,24 +11,19 @@ namespace Dentaku_MVC.Controllers
     public class dentakuController : Controller
     {
 
-        [HttpGet]
-        public ActionResult dentaku()
-        {
-            return View();
-        }
-
-        [HttpPost]
         public ActionResult dentaku(dentakuModel model)
         {
-            model.result = CalcProc(model.siki).ToString();
-          
-            return View();
+            model.result = CalcProcVer2(model.siki).ToString();
+
+            //modelをView側に返却しないといけないらしい・・・
+            return View(model);
         }
 
         /// <summary>
         /// 演算用プロシージャ
         /// </summary>
         /// <param name="siki"></param>
+        /// 備考：１＋１のような単純計算に対応
         /// <returns></returns>
         private int CalcProc(string siki)
         {
@@ -49,6 +44,7 @@ namespace Dentaku_MVC.Controllers
                     return 0;
                 }
 
+                //式の長さ分ループ
                 for (int i = 0; i < siki.Length; i++)
                 {
                     //一文字ずつ取得していく
@@ -160,6 +156,211 @@ namespace Dentaku_MVC.Controllers
                         result = 0;
                         break;
                 }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// 演算用プロシージャ
+        /// </summary>
+        /// <param name="siki"></param>
+        /// 備考：１＋２＊３のような複数計算に対応
+        /// <returns></returns>
+        private int CalcProcVer2(string siki)
+        {
+
+            try
+            {
+                
+                List<string> strlist = new List<string>();
+                List<int> numlist = new List<int>();
+                List<string> enzansilist = new List<string>();
+                string kari = String.Empty;
+                int enzansi = 0;
+                int tryres = 0;
+                int result = 0;
+
+                //空の時は処理を抜ける
+                if (String.IsNullOrEmpty(siki))
+                {
+                    return 0;
+                }
+
+                //式の長さ分ループ
+                for (int i = 0; i < siki.Length; i++)
+                {
+                    //一文字ずつ取得していく
+                    kari = siki.Substring(i, 1);
+                    switch (kari)
+                    {
+                        case "+":
+                            //先頭か判断
+                            if (enzansilist.Count != 0)
+                            {
+                                strlist.Add(siki.Substring(enzansi + 1, i - enzansi - 1));  //演算子の位置から次の演算子までの数字を保持
+                            }
+                            else
+                            {
+                                strlist.Add(siki.Substring(enzansi, i - enzansi));  //演算子の位置から次の演算子までの数字を保持
+                            }
+                            enzansilist.Add(kari);                              //演算子を保持
+                            enzansi = i;                                        //演算子の位置を更新
+                            break;
+
+                        case "-":
+                            //先頭か判断
+                            if (enzansilist.Count != 0)
+                            {
+                                strlist.Add(siki.Substring(enzansi + 1, i - enzansi - 1));  //演算子の位置から次の演算子までの数字を保持
+                            }
+                            else
+                            {
+                                strlist.Add(siki.Substring(enzansi, i - enzansi));  //演算子の位置から次の演算子までの数字を保持
+                            }
+                            enzansilist.Add(kari);                              //演算子を保持
+                            enzansi = i;                                        //演算子の位置を更新
+                            break;
+
+                        case "%":
+                            //先頭か判断
+                            if (enzansilist.Count != 0)
+                            {
+                                strlist.Add(siki.Substring(enzansi + 1, i - enzansi - 1));  //演算子の位置から次の演算子までの数字を保持
+                            }
+                            else
+                            {
+                                strlist.Add(siki.Substring(enzansi, i - enzansi));  //演算子の位置から次の演算子までの数字を保持
+                            }
+                            enzansilist.Add(kari);                              //演算子を保持
+                            enzansi = i;                                        //演算子の位置を更新
+                            break;
+
+                        case "/":
+                            //先頭か判断
+                            if (enzansilist.Count != 0)
+                            {
+                                strlist.Add(siki.Substring(enzansi + 1, i - enzansi - 1));  //演算子の位置から次の演算子までの数字を保持
+                            }
+                            else
+                            {
+                                strlist.Add(siki.Substring(enzansi, i - enzansi));  //演算子の位置から次の演算子までの数字を保持
+                            }
+                            enzansilist.Add(kari);                              //演算子を保持
+                            enzansi = i;                                        //演算子の位置を更新
+                            break;
+
+                        case "*":
+                            //先頭か判断
+                            if (enzansilist.Count != 0)
+                            {
+                                strlist.Add(siki.Substring(enzansi + 1, i - enzansi - 1));  //演算子の位置から次の演算子までの数字を保持
+                            }
+                            else
+                            {
+                                strlist.Add(siki.Substring(enzansi, i - enzansi));  //演算子の位置から次の演算子までの数字を保持
+                            }
+                            enzansilist.Add(kari);                              //演算子を保持
+                            enzansi = i;                                        //演算子の位置を更新
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    //最後までループした場合最後の数値を取得する
+                    if (i == siki.Length - 1)
+                    {
+                        strlist.Add(siki.Substring(enzansi + 1));
+                    }
+
+                }
+
+                #region チェック関連
+                //数字リストに異物混入していないか判断
+                foreach (string item in strlist)
+                {
+                    //アイテムが空じゃないか判断
+                    if (String.IsNullOrEmpty(item))
+                    {
+                        //メッセージボックス（アラート）使いたいけど、JavaScriptの力が必要。
+                        //とりあえず後回し
+                        return 0;
+                    }
+                    //数字に変換可能か
+                    if (!int.TryParse(item, out tryres))
+                    {
+                        //メッセージボックス（アラート）使いたいけど、JavaScriptの力が必要。
+                        //とりあえず後回し
+                        return 0;
+                    }
+                    //StringからIntに変換して保持
+                    numlist.Add(tryres);
+                }
+                #endregion
+
+                for (int i = 0; i < enzansilist.Count; i++)
+                {
+                    kari = enzansilist[i].ToString();
+                    //演算子を見て計算する
+                    switch (kari)
+                    {
+                        case "%":
+                            numlist[i] = numlist[i] % numlist[i + 1];   //演算子を挟んだ数値で計算
+                            numlist.RemoveAt(i + 1);                    //計算後不要になった数値を削除
+                            enzansilist.RemoveAt(i);                    //計算後不要になった演算子を削除
+                            i = -1;
+                            break;
+
+                        case "/":
+                            numlist[i] = numlist[i] / numlist[i + 1];
+                            numlist.RemoveAt(i + 1);                    //計算後不要になった数値を削除
+                            enzansilist.RemoveAt(i);                    //計算後不要になった演算子を削除
+                            i = -1;
+                            break;
+
+                        case "*":
+                            numlist[i] = numlist[i] * numlist[i + 1];
+                            numlist.RemoveAt(i + 1);                    //計算後不要になった数値を削除
+                            enzansilist.RemoveAt(i);                    //計算後不要になった演算子を削除
+                            i = -1;
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+                for (int i = 0; i < enzansilist.Count; i++)
+                {
+                    kari = enzansilist[i].ToString();
+                    //演算子を見て計算する
+                    switch (kari)
+                    {
+                        case "+":
+                            numlist[i] = numlist[i] + numlist[i + 1];
+                            numlist.RemoveAt(i + 1);                    //計算後不要になった数値を削除
+                            enzansilist.RemoveAt(i);                    //計算後不要になった演算子を削除
+                            i = -1;
+                            break;
+
+                        case "-":
+                            numlist[i] = numlist[i] - numlist[i + 1];
+                            numlist.RemoveAt(i + 1);                    //計算後不要になった数値を削除
+                            enzansilist.RemoveAt(i);                    //計算後不要になった演算子を削除
+                            i = -1;
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+                result = numlist[0];    //先頭に最終計算結果が入っている・・・はずｗ
 
                 return result;
             }
