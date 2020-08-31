@@ -1,0 +1,38 @@
+﻿@model Dentaku_MVC.Models.btntestModel
+
+@{
+    ViewBag.Title = "電卓（ボタン練習用）";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (@Html.BeginForm())
+{
+    <div class="form-item">
+        @Html.DisplayNameFor(model => model.leftsiki)
+        @Html.TextBoxFor(model => model.leftsiki)
+    </div>
+    <div class="form-item">
+        @Html.DisplayNameFor(model => model.rightsiki)
+        @Html.TextBoxFor(model => model.rightsiki)
+    </div>
+    <div class="form-item">
+        @Html.DisplayNameFor(model => model.result)
+        @Html.DisplayFor(model => model.result)
+    </div>
+    <div class="button-panel">
+        <input type="submit" name="keisan" class="button" value="+" />
+    </div>
+    <div class="button-panel">
+        <input type="submit" name="keisan" class="button" value="-" />
+    </div>
+    <div class="button-panel">
+        <input type="submit" name="keisan" class="button" value="*" />
+    </div>
+    <div class="button-panel">
+        <input type="submit" name="keisan" class="button" value="/" />
+    </div>
+    <br />
+    @ViewBag.ErrorMessage
+    <label style="color:#ff0000">@Html.ValidationSummary()</label>
+}
